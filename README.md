@@ -75,7 +75,7 @@ ORDER BY
 ```
 
 ## JavaScript/TypeScript Questions
-### Level 1: Title Case Function
+### Level 1.1: Title Case Function
 ```javascript
 function titleCase(str) {
   if (!str) return "";
@@ -97,3 +97,51 @@ console.log(`"I'm a little tea pot" should return "I'm A Little Tea Pot": "${tit
 console.log(`"sHoRt AnD sToUt" should return "Short And Stout": "${titleCase("sHoRt AnD sToUt")}"`);
 console.log(`"SHORT AND STOUT" should return "Short And Stout": "${titleCase("SHORT AND STOUT")}"`);
 ```
+
+### Level 1.2: Word Frequency Counter
+
+```javascript
+function wordFrequencyCounter(text) {
+  const wordCounts = {};
+
+  const words = text.toLowerCase().split(/\s+/);
+
+  for (const word of words) {
+    if (!word) continue;
+
+    if (wordCounts[word]) {
+      wordCounts[word] += 1;
+    } else {
+      wordCounts[word] = 1;
+    }
+  }
+
+  return wordCounts;
+}
+
+// Test Case
+const testString = "Four One two two three Three three four four four";
+const result = wordFrequencyCounter(testString);
+console.log(result);
+
+/*
+Expected Output:
+{
+  one: 1,
+  two: 2,
+  three: 3,
+  four: 4
+}
+*/
+```
+### Level 2: Fix delay with Promises
+
+```javascript
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+// Example usage:
+delay(3000).then(() => console.log('runs after 3 seconds'));
+```
+
