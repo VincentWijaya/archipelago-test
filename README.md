@@ -73,3 +73,27 @@ HAVING
 ORDER BY
     MAX(o.OrderDate) desc;
 ```
+
+## JavaScript/TypeScript Questions
+### Level 1: Title Case Function
+```javascript
+function titleCase(str) {
+  if (!str) return "";
+
+  const words = str.toLowerCase().split(' ');
+
+  const capitalizedWords = words.map(word => {
+    const firstLetter = word.charAt(0).toUpperCase();
+    const restOfWord = word.slice(1);
+    return firstLetter + restOfWord;
+  });
+
+  return capitalizedWords.join(' ');
+}
+
+// ✅ Test Cases
+console.log(`"I'm a little tea pot" should return a string: ${typeof titleCase("I'm a little tea pot") === 'string'}`);
+console.log(`"I'm a little tea pot" should return "I'm A Little Tea Pot": "${titleCase("I'm a little tea pot")}"`);
+console.log(`"sHoRt AnD sToUt" should return "Short And Stout": "${titleCase("sHoRt AnD sToUt")}"`);
+console.log(`"SHORT AND STOUT" should return "Short And Stout": "${titleCase("SHORT AND STOUT")}"`);
+```
