@@ -144,4 +144,46 @@ function delay(ms) {
 // Example usage:
 delay(3000).then(() => console.log('runs after 3 seconds'));
 ```
+### Level 2.5: Async/await
+```javascript
+// Convert fetchData to return a Promise
+function fetchDataPromise(url) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (!url) {
+        reject("URL is required");
+      } else {
+        resolve(`Data from ${url}`);
+      }
+    }, 1000);
+  });
+}
 
+// Convert processData to return a Promise
+function processDataPromise(data) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (!data) {
+        reject("Data is required");
+      } else {
+        resolve(data.toUpperCase());
+      }
+    }, 1000);
+  });
+}
+
+// Rewrite using Async/Await
+async function processWorkflow(url) {
+  try {
+    const data = await fetchDataPromise(url);
+    const processedData = await processDataPromise(data);
+    console.log("Processed Data:", processedData);
+  } catch (error) {
+    console.error("Process Error:", error);
+  }
+}
+
+// Example usage:
+processWorkflow("[https://example.com](https://example.com)");
+processWorkflow(null); // To test the error case
+```
