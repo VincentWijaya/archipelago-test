@@ -187,3 +187,41 @@ async function processWorkflow(url) {
 processWorkflow("[https://example.com](https://example.com)");
 processWorkflow(null); // To test the error case
 ```
+
+### Level 3-4 (See livechat folder)
+
+## Vue.js
+
+#### Explain Vue.js reactivity and common issues when tracking changes.
+
+Vue's reactivity system efficiently updates the DOM by converting data properties into reactive getters and setters. When a reactive property is used in a component, Vue tracks it as a dependency. Upon a change, the setter triggers an update, leading to a targeted re-render of affected components using a virtual DOM.
+
+Common Issues:
+
+- **Adding new properties to reactive objects (Vue 2)**: Directly adding this.myObject.newProp = 'value' wasn't reactive. Solved by Vue.set() or creating a new object. Vue 3 (using Proxies) largely resolves this.
+- **Directly modifying array indices or length (Vue 2)**: this.myArray[index] = newValue or this.myArray.length = 0 were not reactive. Required array methods (splice, push). Vue 3's Proxies handle these better.
+- **Using non-reactive data**: Data not properly declared as reactive won't trigger updates.
+- **Asynchronous updates**: Vue batches DOM updates. nextTick() is needed to access DOM after a reactive change.
+- **Nested object/array changes**: While Vue 3 is improved, deeply nested changes might still require re-assigning entire objects/arrays for optimal reactivity.
+
+#### Describe data flow between components in a Vue.js app
+
+Vue's data flow is primarily unidirectional, ensuring predictability and maintainability.
+
+1. **Props Down, Events Up**:
+1.1 **Props Down**: Parent components pass data to children via props. Children should treat props as immutable.
+1.2 **Events Up**: Children communicate back to parents by emitting custom events. Parents listen for these events and update their own data, which then flows down.
+2. **Slots**: Allow parent components to inject content into specific areas of a child's template, providing flexible component composition.
+3. **Provide/Inject**: Used for passing data deeply to nested components without "prop-drilling." A parent provides data, and any descendant can inject it. Used cautiously, as it can obscure data flow.
+4. **State Management Libraries (Vuex/Pinia)**: For larger applications, a centralized store (like Pinia or Vuex) acts as a single source of truth. Components commit mutations or dispatch actions to update the store, and read state directly from it.
+
+#### List the most common cause of memory leaks in Vue.js apps and how they can be solved.
+
+Memory leaks in Vue apps occur when references to objects persist unexpectedly, preventing garbage collection.
+
+1. **Event Listeners Not Cleaned Up**: Adding ```window.addEventListener``` or custom event listeners in ```mounted()``` but failing to ```removeEventListener``` in ```beforeUnmount()``` (or ```destroyed()``` in Vue 2).
+2. **Timers Not Cleared**: ```setInterval``` or ```setTimeout``` calls not being ```clearInterval``` or ```clearTimeout``` in ```beforeUnmount()```.
+3. **Unsubscribed Subscriptions**: Failing to unsubscribe from observables (e.g., RxJS) or close WebSocket connections when the component is unmounted.
+4. **Global Objects/Caches Holding References**: Components registering with a global object or third-party library without deregistering upon unmount.
+5. **Improper ```v-if``` vs ```v-show``` use**: ```v-show``` only toggles visibility, keeping components mounted, which can accumulate leaks if not properly managed, whereas ```v-if``` truly mounts/unmounts.
+6. The key solution is to clean up what you set up: if you create or open something in ```mounted()``` (or similar lifecycle hooks), ensure it's destroyed or closed in ```beforeUnmount()```.
