@@ -225,3 +225,182 @@ Memory leaks in Vue apps occur when references to objects persist unexpectedly, 
 4. **Global Objects/Caches Holding References**: Components registering with a global object or third-party library without deregistering upon unmount.
 5. **Improper ```v-if``` vs ```v-show``` use**: ```v-show``` only toggles visibility, keeping components mounted, which can accumulate leaks if not properly managed, whereas ```v-if``` truly mounts/unmounts.
 6. The key solution is to clean up what you set up: if you create or open something in ```mounted()``` (or similar lifecycle hooks), ensure it's destroyed or closed in ```beforeUnmount()```.
+
+#### What have you used for state management
+
+My primary choice for Vue.js state management has transitioned to Pinia. Before Pinia, I extensively used Vuex, especially for Vue 2 projects.
+
+I prefer Pinia due to its:
+
+- **Simpler API**: Feels more aligned with the Composition API (ref/reactive).
+- **Native TypeScript Support**: Excellent out-of-the-box type safety.
+- **No Mutations Concept**: Simplifies state modification directly within actions.
+- **Modularity**: Easy to define and use modular stores without complex configurations.
+  
+For smaller applications, I sometimes rely on the Composition API's ref/reactive combined with provide/inject to avoid over-engineering.
+
+#### What’s the difference between pre-rendering and server side rendering?
+
+Pre-rendering (Static Site Generation - SSG) vs. Server-Side Rendering (SSR)
+
+Both are techniques to improve initial load time and SEO for JavaScript applications, but they differ in when and how HTML is generated.
+
+##### Pre-rendering (Static Site Generation - SSG)
+
+* **When:** HTML is generated at **build time**.
+* **How:** A tool (e.g., Nuxt.js, Next.js) crawls routes and creates static HTML files for each.
+* **Delivery:** Static HTML served directly from a CDN. JavaScript then "hydrates" it into an interactive SPA.
+* **Pros:**
+    * Extremely fast initial load (low TTFB)
+    * Excellent for SEO
+    * Simple hosting
+* **Cons:**
+    * Requires rebuild on content change
+    * Best for mostly static content
+
+##### Server-Side Rendering (SSR)
+
+* **When:** HTML is generated **on the fly for every request** on a server.
+* **How:** The server runs your application code, renders initial HTML for the specific route, and sends it to the browser.
+* **Delivery:** Browser receives and displays HTML, then JavaScript hydrates it.
+* **Pros:**
+    * Good for SEO
+    * Faster initial load than pure client-side rendering
+    * Suitable for dynamic content
+* **Cons:**
+    * Requires a server (higher infrastructure cost/complexity)
+    * Can have higher TTFB than SSG due to server processing
+
+Essentially, SSG is like baking a cake in advance, while SSR is baking a fresh cake per order.
+
+## Website Security Best Practises
+
+Security is paramount. My top priorities for web security include:
+
+* **Input Validation & Sanitization:**
+    * Never trust user input.
+    * Validate data types, lengths, formats, and ranges.
+    * Sanitize input to neutralize malicious characters (e.g., prevent SQL Injection, XSS).
+    * Always validate on both client and server-side, with server-side being the ultimate authority.
+
+* **HTTPS Everywhere:**
+    * Enforce HTTPS for all traffic using robust TLS certificates.
+    * This encrypts communication, protecting data integrity and confidentiality.
+    * Implement HSTS (HTTP Strict Transport Security).
+
+* **Strong Authentication & Authorization:**
+    * **Authentication:**
+        * Enforce strong password policies.
+        * Use MFA (Multi-Factor Authentication).
+        * Securely hash and salt passwords (e.g., bcrypt).
+    * **Authorization:**
+        * Implement robust RBAC (Role-Based Access Control) or ABAC (Attribute-Based Access Control) systems.
+        * Verify permissions on the server-side for every sensitive operation.
+
+* **Protection Against OWASP Top 10:**
+    * Actively mitigate common vulnerabilities like:
+        * XSS (Cross-Site Scripting) (output encoding, CSP - Content Security Policy).
+        * CSRF (Cross-Site Request Forgery) (anti-CSRF tokens).
+        * Broken Access Control (proper authorization checks).
+
+* **Dependency Management & Patching:**
+    * Regularly audit and update all third-party libraries/frameworks to patch known vulnerabilities.
+
+* **Secure Error Handling & Logging:**
+    * Provide generic error messages to users.
+    * Log detailed errors securely on the server.
+    * Monitor logs for suspicious activity.
+
+* **Least Privilege Principle:**
+    * Grant only the minimum necessary permissions to users, applications, and services.
+
+## Website Performance Best Practises
+
+* **Minimize HTTP Requests & Optimize Asset Delivery:**
+    * Concatenate and minify CSS/JS.
+    * Use bundlers (Webpack, Vite).
+    * Optimize images for lower requests (e.g., CSS sprites, though less critical with HTTP/2).
+
+* **Image Optimization:**
+    * Compress images without quality loss.
+    * Implement responsive images (`srcset`, `sizes` attributes).
+    * Lazy load images (`loading="lazy"`).
+    * Utilize modern formats (WebP, AVIF).
+
+* **Leverage Caching:**
+    * **Browser Caching:** Configure HTTP caching headers for static assets (long cache durations with cache busting).
+    * **CDN:** Distribute static assets closer to users.
+    * **Server-side Caching:** Cache frequently accessed data or dynamic content.
+
+* **Optimize Critical Rendering Path & Defer Non-Critical Assets:**
+    * Use `defer` or `async` for `<script>` tags to prevent blocking.
+    * Prioritize above-the-fold content.
+
+* **Efficient JavaScript Execution:**
+    * Apply tree shaking and code splitting.
+    * Minimize DOM manipulation.
+    * Consider Web Workers for heavy computations.
+
+* **Enable Gzip/Brotli Compression:**
+    * Compress text-based resources transmitted over the network.
+
+* **Avoid Render-Blocking Resources:**
+    * Regularly audit with tools like Google Lighthouse to identify and resolve bottlenecks.
+
+## Golang
+```go
+package main
+
+import (
+    "fmt"
+    "strings"
+)
+
+func wordFrequencyCounter(text string) map[string]int {
+    wordCounts := make(map[string]int)
+    words := strings.Fields(strings.ToLower(text))
+
+    for _, word := range words {
+        if word == "" {
+            continue
+        }
+        wordCounts[word]++
+    }
+
+    return wordCounts
+}
+
+func main() {
+    testString := "Four One two two three Three three four four four"
+    result := wordFrequencyCounter(testString)
+    fmt.Println(result)
+    // Expected Output:
+    // map[one:1 two:2 three:3 four:4]
+}
+```
+
+## Tools (Rate yourself 1 to 5)
+* **Git:** 5/5
+    * Highly proficient with Git, including complex branching, merging, rebasing, and conflict resolution in daily workflows.
+* **Redis:** 4/5
+    * Extensive experience with Redis for caching, session management, and messaging. Confident in setup and interaction, though I haven't delved into every advanced cluster setup.
+* **VSCode / JetBrains:** 5/5
+    * VSCode is my primary IDE; highly proficient with its features, extensions, and debugging.
+* **Linux:** 4/5
+    * Very comfortable with Linux environments, command line operations, server management, scripting, and understanding core concepts for web development and operations.
+* **AWS:** 4/5
+    * Hands-on experience deploying and managing applications on AWS, proficient with core services like EC2, S3, RDS, Lambda, CloudWatch, Route 53, and CloudFront.
+  * **EC2:** 4/5
+    * Comfortable with launching, configuring, and managing EC2 instances.
+  * **Lambda:** 3/5
+    * Experienced in using AWS Lambda for serverless functions, triggered by various events like API Gateway or S3.
+  * **RDS:** 4/5
+    * Solid experience with RDS for managed relational databases (PostgreSQL, MySQL).
+  * **Cloudwatch:** 3/5
+    * Regularly use CloudWatch for monitoring logs, setting alarms, and tracking basic metrics for AWS resources.
+  * **S3:** 4/5
+    * Proficient with S3 for static hosting, content storage, backups, and serving assets via CloudFront.
+* **Unit testing:** 4/5
+    * Strong believer in unit testing, applying mocks and assertions for good test coverage.
+* **Kanban boards:** 5/5
+    * Very familiar and experienced with Kanban boards and agile methodologies for task tracking, workflow management, and prioritization.
